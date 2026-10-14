@@ -1,0 +1,10 @@
+{
+  "repository": "whmcs-ipv6",
+  "version": "3.0.0",
+  "product": "ipv6",
+  "module": "yourresellingipv6",
+  "type": "servers",
+  "modulePath": "modules/servers/yourresellingipv6",
+  "namespace": "YourReselling\\Whmcs\\Ipv6",
+  "contractDigest": "a6cdf1be65f4bcb63fd16c07820052f53ccff30819262ec5393061ac44e03956"
+}

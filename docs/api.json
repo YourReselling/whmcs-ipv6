@@ -1,0 +1,654 @@
+{
+  "contractDigest": "a6cdf1be65f4bcb63fd16c07820052f53ccff30819262ec5393061ac44e03956",
+  "operations": [
+    {
+      "method": "POST",
+      "path": "/products/ipv6/order",
+      "source": "app/Http/Controllers/Api/V1/Ipv6/IpSubnet6ApiController.php:199",
+      "required_fields": [
+        "ip_pool_id",
+        "ripe_organisation_id"
+      ],
+      "response_id_path": "data.id",
+      "body": {
+        "type": "object",
+        "properties": {
+          "ip_pool_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the IP pool to order from",
+            "x-validation": [
+              "required",
+              "uuid",
+              "exists:ip_pools,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "ripe_organisation_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "RIPE organisation to assign this subnet to",
+            "x-validation": [
+              "required",
+              "uuid",
+              "exists:ripe_organisations,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "ripe_contact_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Tech/admin contact (optional)",
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "uuid",
+              "exists:ripe_contacts,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "ripe_abuse_contact_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Abuse contact (optional)",
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "uuid",
+              "exists:ripe_contacts,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "country": {
+            "type": "string",
+            "description": "2-letter country code (default: DE)",
+            "minLength": 2,
+            "maxLength": 2,
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "string",
+              "size:2"
+            ],
+            "x-validation-expressions": []
+          },
+          "asns": {
+            "type": "array",
+            "description": "Initial ASNs to add (optional)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "asn": {
+                  "type": "string",
+                  "maxLength": 15,
+                  "x-validation": [
+                    "required",
+                    "string",
+                    "regex:/^(AS)?\\d{1,10}$/i",
+                    "max:15"
+                  ],
+                  "x-validation-expressions": []
+                },
+                "label": {
+                  "type": "string",
+                  "maxLength": 100,
+                  "nullable": true,
+                  "x-validation": [
+                    "nullable",
+                    "string",
+                    "max:100"
+                  ],
+                  "x-validation-expressions": []
+                },
+                "enable_routing": {
+                  "type": "boolean",
+                  "x-validation": [
+                    "boolean"
+                  ],
+                  "x-validation-expressions": []
+                }
+              },
+              "additionalProperties": true,
+              "required": [
+                "asn"
+              ]
+            },
+            "maxItems": 8,
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "array",
+              "max:8"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "ip_pool_id",
+          "ripe_organisation_id"
+        ]
+      },
+      "bodyRequired": true,
+      "pathParameters": [],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "permissions": [
+        "ipv6:create"
+      ],
+      "responseMode": "json"
+    },
+    {
+      "id": "GET /products/ipv6/{assignment}",
+      "group": "ipv6",
+      "name": "get",
+      "method": "GET",
+      "path": "/products/ipv6/{assignment}",
+      "summary": "Show IPv6 subnet details",
+      "description": "Returns detailed information about a specific IPv6 subnet assignment including ASNs, allocations, and RIPE objects.",
+      "germanSummary": "IPv6-Subnetz Details anzeigen",
+      "permissions": [
+        "ipv6:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "assignment",
+          "type": "string",
+          "description": "Assignment ID"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Assignment details",
+          "germanDescription": "Subnetz-Details",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        },
+        {
+          "status": 404,
+          "description": "Assignment not found",
+          "germanDescription": "Zuweisung nicht gefunden",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Ipv6/IpSubnet6ApiController.php:150",
+      "routeName": "api.ipv6.show"
+    },
+    {
+      "method": "POST",
+      "path": "/products/ipv6/{assignment}/terminate",
+      "source": "app/Http/Controllers/Api/V1/Ipv6/IpSubnet6ApiController.php:540",
+      "semantics": "status cancelled immediately; termination_date is next_billing_date or now",
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "pathParameters": [
+        {
+          "name": "assignment",
+          "type": "string",
+          "description": "Assignment ID"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "permissions": [
+        "ipv6:delete"
+      ],
+      "responseMode": "json"
+    },
+    {
+      "id": "GET /products/ipv6/{assignment}/asns",
+      "group": "ipv6",
+      "name": "asnsIndex",
+      "method": "GET",
+      "path": "/products/ipv6/{assignment}/asns",
+      "summary": "List subnet ASNs",
+      "description": "Returns all ASN entries for a specific IPv6 subnet.",
+      "germanSummary": "Subnetz-ASNs auflisten",
+      "permissions": [
+        "ipv6:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "assignment",
+          "type": "string",
+          "description": "Assignment ID"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "ASN list",
+          "germanDescription": "ASN-Liste",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        },
+        {
+          "status": 404,
+          "description": "Assignment not found",
+          "germanDescription": "Zuweisung nicht gefunden",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Ipv6/IpSubnet6ApiController.php:573",
+      "routeName": "api.ipv6.asns.index"
+    },
+    {
+      "id": "PATCH /products/ipv6/{assignment}/geofeed",
+      "group": "ipv6",
+      "name": "geofeed",
+      "method": "PATCH",
+      "path": "/products/ipv6/{assignment}/geofeed",
+      "summary": "Update geofeed",
+      "description": "Updates the geofeed location data for an IPv6 subnet. A unique geofeed URL is generated automatically.",
+      "germanSummary": "Geofeed aktualisieren",
+      "permissions": [
+        "ipv6:update"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "assignment",
+          "type": "string",
+          "description": "Assignment ID"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": "2-letter country code",
+            "minLength": 2,
+            "maxLength": 2,
+            "x-validation": [
+              "required",
+              "string",
+              "size:2"
+            ],
+            "x-validation-expressions": []
+          },
+          "region": {
+            "type": "string",
+            "nullable": true,
+            "description": "Region name",
+            "maxLength": 100,
+            "x-validation": [
+              "nullable",
+              "string",
+              "max:100"
+            ],
+            "x-validation-expressions": []
+          },
+          "city": {
+            "type": "string",
+            "nullable": true,
+            "description": "City name",
+            "maxLength": 100,
+            "x-validation": [
+              "nullable",
+              "string",
+              "max:100"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "country"
+        ]
+      },
+      "bodyRequired": true,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Geofeed updated",
+          "germanDescription": "Geofeed aktualisiert",
+          "schema": null,
+          "example": {
+            "success": true,
+            "message": "Geofeed wurde aktualisiert.",
+            "data": {
+              "geofeed_url": "https://example.com/geofeed/abc123.csv"
+            }
+          },
+          "contentType": "application/json"
+        },
+        {
+          "status": 404,
+          "description": "Assignment not found",
+          "germanDescription": "Zuweisung nicht gefunden",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Ipv6/IpSubnet6ApiController.php:383",
+      "routeName": "api.ipv6.geofeed",
+      "label": "Geofeed ändern"
+    },
+    {
+      "id": "PATCH /products/ipv6/{assignment}/label",
+      "group": "ipv6",
+      "name": "label",
+      "method": "PATCH",
+      "path": "/products/ipv6/{assignment}/label",
+      "summary": "Update subnet label",
+      "description": "Updates the label of an IPv6 subnet. The label is also synced as netname in RIPE if RIPE objects exist.",
+      "germanSummary": "Subnetz-Label aktualisieren",
+      "permissions": [
+        "ipv6:update"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "assignment",
+          "type": "string",
+          "description": "Assignment ID"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 100,
+            "description": "New label (null to remove)",
+            "x-validation": [
+              "nullable",
+              "string",
+              "max:100"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": []
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Label updated",
+          "germanDescription": "Label aktualisiert",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        },
+        {
+          "status": 404,
+          "description": "Assignment not found",
+          "germanDescription": "Zuweisung nicht gefunden",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Ipv6/IpSubnet6ApiController.php:295",
+      "routeName": "api.ipv6.label",
+      "label": "Bezeichnung ändern"
+    },
+    {
+      "id": "GET /account",
+      "group": "account",
+      "name": "get",
+      "method": "GET",
+      "path": "/account",
+      "summary": "Get account details",
+      "description": "Returns the authenticated reseller account details including company information, contact details, tax information, enabled products, and credit balance.",
+      "germanSummary": "Kontoinformationen abrufen",
+      "permissions": [
+        "account:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Account details",
+          "germanDescription": "Kontoinformationen",
+          "schema": null,
+          "example": {
+            "success": true,
+            "data": {
+              "id": "9e1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+              "company_name": "Example GmbH",
+              "contact_name": "Max Mustermann",
+              "email": "max@example.com",
+              "phone": "+49 123 456789",
+              "address": "Musterstraße 1",
+              "city": "Berlin",
+              "zip": "10115",
+              "country": "DE",
+              "tax_id": "DE123456789",
+              "tax_type": "eu_vat",
+              "status": "active",
+              "enabled_products": [
+                "rootserver",
+                "domains",
+                "kubernetes"
+              ],
+              "is_main_reseller": true,
+              "credit_limit": "500.00",
+              "credit_used": "123.45",
+              "credit_available": "376.55",
+              "created_at": "2025-01-15T10:30:00.000000Z"
+            }
+          },
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Account/AccountController.php:53",
+      "routeName": "api.account.show"
+    },
+    {
+      "id": "PATCH /account",
+      "group": "account",
+      "name": "update",
+      "method": "PATCH",
+      "path": "/account",
+      "summary": "Update account details",
+      "description": "Updates non-critical account fields such as company name, contact name, phone, and address. Email, tax ID, and status cannot be changed via API.",
+      "germanSummary": "Kontoinformationen aktualisieren",
+      "permissions": [
+        "account:update"
+      ],
+      "authenticated": true,
+      "pathParameters": [],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Example GmbH",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "contact_name": {
+            "type": "string",
+            "description": "Contact person name",
+            "example": "Max Mustermann",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "+49 123 456789",
+            "maxLength": 50,
+            "nullable": true,
+            "x-validation": [
+              "sometimes",
+              "nullable",
+              "string",
+              "max:50"
+            ],
+            "x-validation-expressions": []
+          },
+          "address": {
+            "type": "string",
+            "description": "Street address",
+            "example": "Musterstraße 1",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "city": {
+            "type": "string",
+            "description": "City",
+            "example": "Berlin",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP code",
+            "example": "10115",
+            "maxLength": 20,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:20"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": []
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Account updated successfully",
+          "germanDescription": "Konto erfolgreich aktualisiert",
+          "schema": null,
+          "example": {
+            "success": true,
+            "data": {
+              "id": "9e1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+              "company_name": "Updated GmbH",
+              "contact_name": "Max Mustermann"
+            }
+          },
+          "contentType": "application/json"
+        },
+        {
+          "status": 422,
+          "description": "Validation error",
+          "germanDescription": "Validierungsfehler",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Account/AccountController.php:92",
+      "routeName": "api.account.update"
+    }
+  ]
+}
